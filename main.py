@@ -1,25 +1,29 @@
+from dotenv import load_dotenv
+import os
 import requests
 from datetime import datetime
 
-GENDER = "male"  # Sample Value
-WEIGHT_KG = 65  # Sample Value
-HEIGHT_CM = 162.56  # Sample Value
-AGE = 28  # Sample Value
+# Sample values
+GENDER = "male"
+WEIGHT_KG = 65
+HEIGHT_CM = 162.56
+AGE = 28
 
-API_ID = "3e39d761"
-API_KEY = "2e3ca2ade1e9e40af700714e0e3d57cd"
+# Load environment variables from .env file
+load_dotenv()
 
+# Retrieve and strip environment variables
+API_ID = os.getenv('API_ID').strip()
+API_KEY = os.getenv('API_KEY').strip()
 
 exercise_endpoint = "https://trackapi.nutritionix.com/v2/natural/exercise"
-get_sheety_endpoint = "https://api.sheety.co/b237e38ca30d773f18ac9108cc89a109/myWorkouts/workouts"
 post_sheety_endpoint = "https://api.sheety.co/b237e38ca30d773f18ac9108cc89a109/myWorkouts/workouts"
 
 exercise_text = input("Tell me which exercise you did: ")
 
 headers = {
     "x-app-id": API_ID,
-    "x-app-key": API_KEY,
-
+    "x-app-key": API_KEY
 }
 
 bearer_headers = {
@@ -34,22 +38,34 @@ parameters = {
     "age": AGE
 }
 
+# Make request to Nutritionix API
 response = requests.post(exercise_endpoint, json=parameters, headers=headers)
-result = response.json()
 
-today_date = datetime.now().strftime("%d/%m/%Y")
-now_time = datetime.now().strftime("%X")
 
-for exercise in result["exercises"]:
-    sheet_inputs = {
-        "workout": {
-            "date": today_date,
-            "time": now_time,
-            "exercise": exercise["name"].title(),
-            "duration": exercise["duration_min"],
-            "calories": exercise["nf_calories"]
-        }
-    }
+if response.status_code != 200:
+    print(f"Error: Received status code {response.status_code}")
+    print(response.text)
+else:
+    result = response.json()
+    print(result)
 
-    sheet_response = requests.post(post_sheety_endpoint, json=sheet_inputs, headers=bearer_headers)
-    print(sheet_response.text)
+    today_date = datetime.now().strftime("%d/%m/%Y")
+    now_time = datetime.now().strftime("%X")
+
+    # Check if the "exercises" key is in the result
+    if "exercises" in result:
+        for exercise in result["exercises"]:
+            sheet_inputs = {
+                "workout": {
+                    "date": today_date,
+                    "time": now_time,
+                    "exercise": exercise["name"].title(),
+                    "duration": exercise["duration_min"],
+                    "calories": exercise["nf_calories"]
+                }
+            }
+
+            sheet_response = requests.post(post_sheety_endpoint, json=sheet_inputs, headers=bearer_headers)
+            print(sheet_response.text)
+    else:
+        print("Error: 'exercises' key not found in the response")
