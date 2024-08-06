@@ -1,4 +1,4 @@
-![1](https://github.com/user-attachments/assets/b4702df9-ba40-4fbd-a696-fa38b735beab)**Workout Tracker Application**
+**Workout Tracker Application**
 
 **Overview**
 The Workout Tracker Application is an application built using Python and PyQt5 that helps users log their exercise routines and track their workouts. 
