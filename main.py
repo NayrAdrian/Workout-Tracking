@@ -12,6 +12,7 @@ import os
 load_dotenv()
 API_ID = os.getenv('API_ID').strip()
 API_KEY = os.getenv('API_KEY').strip()
+BEARERS_KEY = os.getenv('bearers_key')
 
 
 class WorkoutTrackerApp(QWidget):
@@ -44,7 +45,7 @@ class WorkoutTrackerApp(QWidget):
         logo_layout = QVBoxLayout()
         logo_layout.setAlignment(Qt.AlignCenter)
         logo_label = QLabel()
-        logo_pixmap = QPixmap("workoutTracker_logo.PNG")  # Replace with the path to your logo
+        logo_pixmap = QPixmap("workoutTracker_logo.PNG")
         logo_label.setPixmap(logo_pixmap.scaled(400, 400, Qt.KeepAspectRatio))
         logo_label.setAlignment(Qt.AlignCenter)
         logo_layout.addWidget(logo_label)
@@ -56,7 +57,7 @@ class WorkoutTrackerApp(QWidget):
 
         # Exercise input
         self.exercise_input = QLineEdit()
-        self.exercise_input.setPlaceholderText("Tell me what exercises you did today...")
+        self.exercise_input.setPlaceholderText("Tell me what exercises you did today and duration (in minutes)...")
         self.exercise_input.setStyleSheet(
             "padding: 10px; border-radius: 5px; border: 1px solid #ffffff; color: #ffffff; background-color: #000000;")
         form_layout.addRow(QLabel("Exercise:"), self.exercise_input)
@@ -110,7 +111,7 @@ class WorkoutTrackerApp(QWidget):
         }
 
         bearer_headers = {
-            "Authorization": "Bearer Wsu57s82bglaj17"
+            "Authorization": BEARERS_KEY
         }
 
         parameters = {
