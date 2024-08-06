@@ -18,7 +18,12 @@ exercise_text = input("Tell me which exercise you did: ")
 
 headers = {
     "x-app-id": API_ID,
-    "x-app-key": API_KEY
+    "x-app-key": API_KEY,
+
+}
+
+bearer_headers = {
+    "Authorization": "Bearer Wsu57s82bglaj17"
 }
 
 parameters = {
@@ -46,5 +51,5 @@ for exercise in result["exercises"]:
         }
     }
 
-    sheet_response = requests.post(post_sheety_endpoint, json=sheet_inputs)
+    sheet_response = requests.post(post_sheety_endpoint, json=sheet_inputs, headers=bearer_headers)
     print(sheet_response.text)
